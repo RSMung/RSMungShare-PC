@@ -31,11 +31,12 @@ public class ReceiveThread extends Thread{
 				streamFromNetwork = new MyObjectInputStream(socket.getInputStream());
 				MsgBean msg = (MsgBean) streamFromNetwork.readObject();
 				MainActivity m = weakReference.get();
-				m.displayMsg(
-						"Time:"+msg.getTime()+
-						"   Source:"+msg.getSource()+
-						"   Target:"+msg.getTarget()+
-						"   Content:"+msg.getTvContent()+"\n");
+				m.displayMsg(msg);
+//				m.displayMsg(
+//						"Time:"+msg.getTime()+
+//						"   Source:"+msg.getSource()+
+//						"   Target:"+msg.getTarget()+
+//						"   Content:"+msg.getTvContent()+"\n");
 				streamFromNetwork.close();
 			}
 		} catch (Exception e) {

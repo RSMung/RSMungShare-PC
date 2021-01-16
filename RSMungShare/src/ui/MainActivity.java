@@ -135,9 +135,21 @@ public class MainActivity extends JFrame implements ActionListener{
 	}
 
 	/*子线程接收到消息后调用*/
-	public void displayMsg(String msg) {
-		jt_record.append(msg);
-		System.out.println(TAG+",新消息:"+msg);
+	public void displayMsg(MsgBean msg) {
+		String s_msg = null;
+		if(msg.getSource().equals(source_ip)) {
+			//是本机发送出去的消息
+			s_msg = "PC to APP"+
+					"	Time:"+msg.getTime()+
+					"   Content:"+msg.getTvContent()+"\n";
+		}else {
+			//APP发送给本机的消息
+			s_msg = "APP to PC"+
+					"	Time:"+msg.getTime()+
+					"   Content:"+msg.getTvContent()+"\n";
+		}
+		jt_record.append(s_msg);
+		System.out.println(TAG+",新消息:"+s_msg);
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -158,10 +170,11 @@ public class MainActivity extends JFrame implements ActionListener{
 					tvContent, "NULL",
 					"NULL");
 			MsgCollector.addMsg(msg);
-			displayMsg("Time:"+msg.getTime()+
-					"   Source:"+msg.getSource()+
-					"   Target:"+msg.getTarget()+
-					"   Content:"+msg.getTvContent()+"\n");
+			displayMsg(msg);
+//			displayMsg("Time:"+msg.getTime()+
+//					"   Source:"+msg.getSource()+
+//					"   Target:"+msg.getTarget()+
+//					"   Content:"+msg.getTvContent()+"\n");
 			new SendThread(msg).start();
 			jt_input.setText("");
 		}
