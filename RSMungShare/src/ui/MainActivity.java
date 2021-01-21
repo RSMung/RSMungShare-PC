@@ -137,17 +137,18 @@ public class MainActivity extends JFrame implements ActionListener{
 	/*子线程接收到消息后调用*/
 	public void displayMsg(MsgBean msg) {
 		String s_msg = null;
+		String title = null;
 		if(msg.getSource().equals(source_ip)) {
 			//是本机发送出去的消息
-			s_msg = "PC to APP"+
-					"	Time:"+msg.getTime()+
-					"   Content:"+msg.getTvContent()+"\n";
+			title = "PC to APP";
 		}else {
 			//APP发送给本机的消息
-			s_msg = "APP to PC"+
-					"	Time:"+msg.getTime()+
-					"   Content:"+msg.getTvContent()+"\n";
+			title = "APP to PC";
 		}
+		s_msg = title+
+				"	Time:"+msg.getTime()+
+				"   Type:"+msg.getType()+
+				"   Content:"+msg.getTvContent()+"\n";
 		jt_record.append(s_msg);
 		System.out.println(TAG+",新消息:"+s_msg);
 	}
@@ -164,17 +165,17 @@ public class MainActivity extends JFrame implements ActionListener{
 			String tvContent = jt_input.getText();
 			int size = tvContent.length();
 			MsgBean msg = new MsgBean(
-					MsgCollector.size(), "text",
-					time, source_ip,
-					target_ip.getText(), size, 
-					tvContent, "NULL",
-					"NULL");
+					MsgCollector.size(),
+					"text",
+					time,
+					source_ip,
+					target_ip.getText(),
+					size, 
+					tvContent,
+					null,
+					null);
 			MsgCollector.addMsg(msg);
 			displayMsg(msg);
-//			displayMsg("Time:"+msg.getTime()+
-//					"   Source:"+msg.getSource()+
-//					"   Target:"+msg.getTarget()+
-//					"   Content:"+msg.getTvContent()+"\n");
 			new SendThread(msg).start();
 			jt_input.setText("");
 		}
@@ -187,7 +188,8 @@ public class MainActivity extends JFrame implements ActionListener{
             // 遍历所有的网络接口
             for (Enumeration ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements();) {
                 NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
-                if(!iface.getDisplayName().contains("VirtualBox")) {//排除VirtualBox虚拟机的IP地址
+                if(!iface.getDisplayName().contains("VirtualBox") && 
+                		!iface.getDisplayName().contains("VMware")) {//排除VirtualBox和VMware虚拟机的IP地址
                 	// 在所有的接口下再遍历IP
                     for (Enumeration inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements();) {
                         InetAddress inetAddr = (InetAddress) inetAddrs.nextElement();
